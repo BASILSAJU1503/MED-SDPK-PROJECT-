@@ -1,0 +1,64 @@
+
+#include <LiquidCrystal.h>
+#include <DS3231.h>
+#include <Servo.h>
+
+
+// initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+int i = 0;
+
+DS3231  rtc(SDA, SCL);
+Time t;
+
+
+Servo servo_2;
+Servo servo_3;
+Servo servo_4;
+
+
+void setup() {
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  // Print a message to the LCD.
+ pinMode(A5, INPUT);
+  rtc.begin();
+  
+  servo_2.attach(6, 500, 2500);
+  servo_3.attach(7, 500, 2500);
+  servo_4.attach(8, 500, 2500);
+}
+
+void loop() 
+{
+  i = map(analogRead(A5), 0, 1023, 24, 0);
+  delay(10);
+  // set the cursor to column 0, line 1
+  // (note: line 1 is the second row, since counting begins with 0):
+  lcd.setCursor(0, 1);
+  lcd.print(i);
+
+
+  t = rtc.getTime();
+  Serial.print(t.hour);
+  Serial.print(" hour(s), ");
+  Serial.print(t.min);
+  Serial.print(" minute(s)");
+  Serial.println(" ");
+  delay (1000);
+
+
+  if(t.hour == i && t.min ==1 )
+  {
+      servo_2.write(180);
+      servo_3.write(180);
+      servo_4.write(180);
+  }
+  elseif(t.hour == i && t.min ==2 )
+  {
+      servo_2.write(0);
+      servo_3.write(0);
+      servo_4.write(0);
+  }
+}
+ 
